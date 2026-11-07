@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c2137">
+  <meta name="description" content="NEXUS OPTIMIZE M2: comparación didáctica de latencia y rendimiento con NEXUS ANALYZE M1, demostración de clasificación e información académica.">
+  <title>NEXUS OPTIMIZE M2 | Comparación didáctica M1 vs M2</title>
+  <link rel="icon" type="image/webp" href="/assets/nexus-logo.webp">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="NEXUS MENTIS, Módulo 2 · NEXUS OPTIMIZE. Ir al inicio">
+        <img src="/assets/nexus-logo.webp" width="44" height="44" alt="">
+        <span><strong>NEXUS MENTIS</strong><small>Módulo 2 · NEXUS OPTIMIZE</small></span>
+      </a>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#resultados">Resultados</a>
+        <a href="#como-funciona">La técnica</a>
+        <a href="#demostracion">Clasificar tweets</a>
+        <a href="#informacion">Información y apoyo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">ANÁLISIS DE SENTIMIENTOS · TIEMPO DE RESPUESTA</span>
+          <h1 id="page-title">NEXUS ANALYZE vs. <em>NEXUS OPTIMIZE.</em></h1>
+          <p><strong>Módulo 1 (M1)</strong> clasifica sentimientos; <strong>Módulo 2 (M2)</strong> ejecuta esa misma clasificación con menos trabajo intermedio. Compara el tiempo de respuesta y los tweets por segundo medidos, sin cambiar el modelo entrenado: <strong>no se reentrenó</strong>.</p>
+          <div class="hero-actions">
+            <a href="#resultados" class="btn btn-primary">Ver comparación</a>
+            <a href="#demostracion" class="btn btn-secondary">Probar la clasificación</a>
+            <a href="https://nexus-mentis-analyze-m1.onrender.com/" class="btn btn-m1" target="_blank" rel="noopener noreferrer" aria-label="Visitar NEXUS ANALYZE (M1), se abre en una pestaña nueva">Visitar NEXUS ANALYZE (M1) <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="hero-disclaimer">Resultados de pruebas reales en un servidor local. La velocidad puede variar según el equipo y el número de solicitudes.</p>
+        </div>
+        <div class="hero-summary" aria-label="Resumen de las mejoras medidas">
+          <div class="summary-head">
+            <span>Misma clasificación · menor tiempo de respuesta</span>
+            <span id="hero-report-state" class="summary-state" role="status">Sin datos todavía</span>
+          </div>
+          <div class="summary-metric">
+            <span>Variación de latencia p95</span>
+            <strong id="hero-latency">—</strong>
+            <small id="hero-latency-detail">Menos tiempo es mejor</small>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-metric">
+            <span>Variación de tweets por segundo</span>
+            <strong id="hero-throughput">—</strong>
+            <small id="hero-throughput-detail">Más rendimiento es mejor</small>
+          </div>
+          <p id="hero-context" class="summary-context">No mostramos cifras simuladas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="learning-flow container" aria-labelledby="learning-flow-title">
+      <div class="learning-flow-header">
+        <span class="learning-flow-eyebrow">EL MÉTODO DE COMPARACIÓN</span>
+        <h2 id="learning-flow-title">Así comprobamos las mejoras</h2>
+        <p id="learning-flow-description">Mismos datos, dos rutas de ejecución y una comparación de tiempos medidos.</p>
+      </div>
+      <ol class="learning-steps" aria-label="Proceso de comparación de NEXUS OPTIMIZE"
+          aria-describedby="learning-flow-description">
+        <li>Mismos tweets</li>
+        <li>M1 y M2</li>
+        <li>Medimos tiempos</li>
+        <li>Comparamos mejoras</li>
+      </ol>
+    </section>
+
+    <section id="resultados" class="section container" aria-labelledby="results-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow eyebrow-dark">RESULTADOS REALES · COMPARACIÓN DE TIEMPOS</span>
+          <h2 id="results-title">NEXUS ANALYZE vs. NEXUS OPTIMIZE</h2>
+          <p>Explora la misma tarea en dos rutas: <strong>M1 original</strong> y <strong>M2 optimizado</strong>. Cambia el volumen, las solicitudes simultáneas y la muestra para observar mejoras o regresiones reales, sin caché.</p>
+        </div>
+        <button id="reload-results" class="btn btn-outline" type="button">Actualizar resultados</button>
+      </div>
+      <div class="filters" role="group" aria-label="Filtros de la comparación HTTP" aria-describedby="filter-guide">
+        <div class="field">
+          <label for="size-select">Tweets reales procesados</label>
+          <select id="size-select">
+            <option value="1">1 tweet</option>
+            <option value="100">100 tweets</option>
+            <option value="1000">1.000 tweets</option>
+            <option value="10000" selected>10.000 tweets</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="concurrency-select">Solicitudes simultáneas</label>
+          <select id="concurrency-select">
+            <option value="1">1 solicitud</option>
+            <option value="4" selected>4 solicitudes</option>
+            <option value="8">8 solicitudes</option>
+          </select>
+        </div>
+        <div class="field" id="cohort-field" hidden>
+          <label for="cohort-select">Conjunto de prueba</label>
+          <select id="cohort-select">
+            <option value="test_a">Muestra A</option>
+            <option value="test_b">Muestra B</option>
+          </select>
+        </div>
+      </div>
+      <p id="filter-guide" class="filter-guide">
+        <strong>Cómo usar los controles:</strong>
+        <strong>Tweets</strong> = cantidad total analizada;
+        <strong>solicitudes simultáneas</strong> = peticiones al servidor en paralelo
+        (hasta 256 tweets por petición);
+        <strong>muestra A/B</strong> = dos grupos independientes de tweets.
+        Se consultan resultados de pruebas ya realizadas; al cambiar los controles
+        no se ejecuta un experimento nuevo.
+      </p>
+      <p id="global-status" class="state-message" role="status" aria-live="polite">Cargando resultados medidos…</p>
+      <p id="results-status" class="state-message" role="status" aria-live="polite">Consultando resultados…</p>
+      <div class="kpi-grid" id="results-content" hidden>
+        <article class="kpi-card">
+          <div class="kpi-head"><h3>Latencia HTTP p95 por solicitud</h3><span class="pill">Menos es mejor</span></div>
+          <p class="explain">95 % de solicitudes completadas en este tiempo o menos. No es el tiempo total de todos los tweets.</p>
+          <div class="paired-values">
+            <div><span>NEXUS ANALYZE · M1</span><strong id="latency-before">—</strong></div>
+            <div><span>NEXUS OPTIMIZE · M2</span><strong id="latency-after">—</strong></div>
+          </div>
+          <div class="comparison-tracks" aria-hidden="true">
+            <div class="track"><span id="latency-original-bar" class="bar original-bar"></span></div>
+            <div class="track"><span id="latency-optimized-bar" class="bar optimized-bar"></span></div>
+          </div>
+          <p class="delta" id="latency-delta">—</p>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-head"><h3>Capacidad de procesamiento</h3><span class="pill">Más es mejor</span></div>
+          <p class="explain">Tweets clasificados por segundo durante la ejecución completa del volumen seleccionado.</p>
+          <div class="paired-values">
+            <div><span>NEXUS ANALYZE · M1</span><strong id="throughput-before">—</strong></div>
+            <div><span>NEXUS OPTIMIZE · M2</span><strong id="throughput-after">—</strong></div>
+          </div>
+          <div class="comparison-tracks" aria-hidden="true">
+            <div class="track"><span id="throughput-original-bar" class="bar original-bar"></span></div>
+            <div class="track"><span id="throughput-optimized-bar" class="bar optimized-bar"></span></div>
+          </div>
+          <p class="delta" id="throughput-delta">—</p>
+          <p id="paired-metric-detail" class="fineprint" hidden></p>
+        </article>
+      </div>
+      <div id="interpretation-panel" class="interpretation" hidden>
+        <div>
+          <h3>Interpretación de la medición</h3>
+          <p id="scenario-interpretation"></p>
+          <p id="report-method" class="fineprint"></p>
+        </div>
+        <div class="validation">
+          <strong id="validation-title">—</strong>
+          <span id="validation-detail">—</span>
+        </div>
+      </div>
+      <div class="table-card" id="comparison-table-panel" hidden>
+        <div class="table-header">
+          <h3>Todos los resultados para el volumen seleccionado</h3>
+          <p>Las solicitudes simultáneas se muestran solo si el volumen permite medirlas. Las combinaciones imposibles figuran como «No aplica».</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption>Tiempo y capacidad de procesamiento: versión original frente a versión optimizada, según solicitudes simultáneas</caption>
+            <thead><tr>
+              <th scope="col">Solicitudes</th>
+              <th scope="col">p95 M1</th>
+              <th scope="col">p95 M2</th>
+              <th scope="col">Cambio p95</th>
+              <th scope="col">Tweets/s M1</th>
+              <th scope="col">Tweets/s M2</th>
+              <th scope="col">Cambio tweets/s</th>
+            </tr></thead>
+            <tbody id="comparison-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      <p class="disclosure">Cómo leer estos datos: menos milisegundos significa menor tiempo de respuesta;
+        más tweets/s significa mayor capacidad de procesamiento. Se comparan las dos rutas del mismo
+        clasificador, en la misma API local, con textos originales de Sentiment140, sin caché ni repeticiones
+        artificiales. La comparación de rendimiento utiliza medianas de las mediciones y no representa
+        dos despliegues independientes.</p>
+    </section>
+
+    <section id="como-funciona" class="section section-soft" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow eyebrow-dark">EXPLICACIÓN DIDÁCTICA</span>
+            <h2 id="how-title">¿Qué se optimizó realmente?</h2>
+            <p>Conservamos el vocabulario, los IDF y los coeficientes de la regresión logística del modelo original. Aceleramos la forma de calcular las puntuaciones.</p>
+          </div>
+        </div>
+        <div class="pipeline-comparison" aria-label="Estructura original frente a estructura optimizada">
+          <article class="pipeline-path">
+            <span class="step">MÓDULO 1 · ORIGINAL</span>
+            <h3>NEXUS ANALYZE (M1)</h3>
+            <ol class="pipeline-steps">
+              <li>Tweet original</li>
+              <li>Normalización del texto</li>
+              <li>Construcción de matriz TF-IDF</li>
+              <li>Regresión logística entrenada</li>
+              <li>Sentimiento positivo / negativo</li>
+            </ol>
+            <p>Se construyen los vectores y después se calcula la clasificación.</p>
+          </article>
+          <div class="pipeline-bridge" aria-hidden="true">→</div>
+          <article class="pipeline-path pipeline-optimized">
+            <span class="step">MÓDULO 2 · OPTIMIZADO</span>
+            <h3>NEXUS OPTIMIZE (M2)</h3>
+            <ol class="pipeline-steps">
+              <li>Los mismos tweets</li>
+              <li>Normalización equivalente y más ligera</li>
+              <li class="highlight-step">Cálculo fusionado TF-IDF + puntuación logística</li>
+              <li>Mismos coeficientes del M1</li>
+              <li>Las mismas etiquetas de sentimiento</li>
+            </ol>
+            <p>Se evita materializar la matriz TF-IDF intermedia completa; no se reentrena el modelo.</p>
+          </article>
+        </div>
+        <aside class="optimization-summary" aria-label="Mejoras aplicadas en NEXUS OPTIMIZE">
+          <strong>¿Qué mejoró en NEXUS OPTIMIZE?</strong>
+          <p>M2 agiliza la normalización y fusiona el cálculo TF-IDF con la puntuación logística,
+             evitando construir una matriz intermedia completa. En las pruebas HTTP con tweets
+             reales se redujo la latencia y aumentaron los tweets procesados por segundo,
+             conservando las predicciones verificadas.</p>
+        </aside>
+        <div class="ag-note" aria-label="Papel del Algoritmo Genético">
+          <strong>Algoritmo Genético (AG): aporte experimental</strong>
+          <p><strong>En la investigación:</strong> exploró configuraciones mediante selección, cruce, mutación
+             y medición de tiempos, pero no demostró una ventaja adicional reproducible.
+             <strong>En la aplicación:</strong> el AG no se ejecuta cuando el visitante clasifica tweets.
+             M2 utiliza la ruta de cálculo fusionado.</p>
+        </div>
+        <div class="invariant" aria-label="Conservación del modelo original">
+          <span class="invariant-check" aria-hidden="true">✓</span>
+          <p><strong>Mismo modelo. Predicciones conservadas.</strong>
+            <span>M2 no reentrena el clasificador; se verificó la coincidencia de etiquetas en las pruebas realizadas.</span></p>
+          <div class="invariant-stat">
+            <span class="invariant-label">F1 macro de M1 en prueba</span>
+            <strong id="f1-macro">—</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demostracion" class="section container" aria-labelledby="demo-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow eyebrow-dark">PRUEBA INTERACTIVA REAL</span>
+          <h2 id="demo-title">Clasifica tweets con ambas rutas</h2>
+          <p>Introduce textos en inglés. El servidor ejecuta M1 y M2 por separado con los mismos tweets. Esta prueba breve <strong>no sustituye el benchmark</strong> ni demuestra un porcentaje estable.</p>
+        </div>
+      </div>
+      <div class="demo-grid">
+        <form class="demo-form" id="demo-form">
+          <label for="demo-texts">Tweets (1–8, hasta 500 caracteres por línea)</label>
+          <textarea id="demo-texts" rows="7" maxlength="4100" required spellcheck="false">I love this film.
+The delivery was a disappointment.
+Today is a fantastic day.
+The new update is not helpful.</textarea>
+          <div class="sample-actions">
+            <button class="text-btn" id="sample-unique" type="button">Cargar cuatro ejemplos</button>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="demo-run" type="submit" disabled>Comparar clasificación</button>
+            <span id="demo-model-status" class="minor-status" role="status">Comprobando servicio…</span>
+          </div>
+          <p class="fineprint">La comparación utiliza las mismas publicaciones en ambas rutas y no almacena los textos en los reportes. En la demostración pública se aplican límites de uso.</p>
+        </form>
+        <div class="demo-output" aria-live="polite" aria-atomic="true">
+          <h3>Resultado</h3>
+          <p id="demo-response" role="status">Envía ejemplos para obtener las predicciones reales.</p>
+          <div id="demo-detail" hidden>
+            <div class="demo-result-grid">
+              <div><span>Coincidencia de etiquetas</span><strong id="demo-equivalence">—</strong></div>
+              <div><span>Procesamiento M1*</span><strong id="demo-reference-ms">—</strong></div>
+              <div><span>Procesamiento M2*</span><strong id="demo-optimized-ms">—</strong></div>
+              <div><span>Estrategia</span><strong id="demo-path">—</strong></div>
+            </div>
+            <p class="fineprint">* Tiempos del servidor en dos solicitudes consecutivas, sin transporte HTTP. No se presentan como evidencia estadística.</p>
+            <ul id="demo-labels" class="prediction-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="informacion" class="section container" aria-labelledby="info-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow eyebrow-dark">NEXUS MENTIS · MÓDULO 2</span>
+          <h2 id="info-title">Información y apoyo</h2>
+          <p>Conoce el proyecto, sus fundamentos, el dataset y los créditos académicos.
+             Material de consulta complementario: la demostración principal está en la comparación y la clasificación.</p>
+        </div>
+      </div>
+
+      <div class="info-tabs" role="tablist" aria-label="Información y apoyo de NEXUS OPTIMIZE">
+        <button type="button" role="tab" class="info-tab" id="tab-acerca" aria-controls="panel-acerca" aria-selected="true" tabindex="0">Acerca de</button>
+        <button type="button" role="tab" class="info-tab" id="tab-dataset" aria-controls="panel-dataset" aria-selected="false" tabindex="-1">Dataset</button>
+        <button type="button" role="tab" class="info-tab" id="tab-fundamentos" aria-controls="panel-fundamentos" aria-selected="false" tabindex="-1">Fundamentos</button>
+        <button type="button" role="tab" class="info-tab" id="tab-trivia" aria-controls="panel-trivia" aria-selected="false" tabindex="-1">Trivia</button>
+        <button type="button" role="tab" class="info-tab" id="tab-ayuda" aria-controls="panel-ayuda" aria-selected="false" tabindex="-1">Ayuda</button>
+        <button type="button" role="tab" class="info-tab" id="tab-institucional" aria-controls="panel-institucional" aria-selected="false" tabindex="-1">Institucional</button>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-acerca" aria-labelledby="tab-acerca" tabindex="0">
+        <h3>Acerca de NEXUS OPTIMIZE · Módulo 2</h3>
+        <p><strong>NEXUS MENTIS</strong> es un proyecto académico de dos módulos complementarios:
+           <strong>NEXUS ANALYZE (M1)</strong> estudia y clasifica el sentimiento de publicaciones de redes sociales;
+           <strong>NEXUS OPTIMIZE (M2)</strong> estudia cómo ejecutar esa misma clasificación
+           con menor tiempo de respuesta.</p>
+        <p>M2 conserva el modelo entrenado de M1 y compara su funcionamiento original
+           con una forma más eficiente de realizar los cálculos. La aplicación permite
+           explorar tiempos de respuesta, capacidad de procesamiento y coincidencia de predicciones.</p>
+        <p><strong>Propósito de la Práctica 2:</strong> analizar, implementar y evaluar técnicas
+           de IA aplicadas a un dataset de redes sociales para optimizar el tiempo de respuesta.</p>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-dataset" aria-labelledby="tab-dataset" tabindex="0" hidden>
+        <h3>Dataset Sentiment140: de Twitter a X</h3>
+        <p>Sentiment140 contiene <strong>1.600.000 tweets históricos en inglés</strong>.
+           Twitter adoptó posteriormente el nombre X; estos datos no proceden de una conexión en tiempo real.</p>
+        <dl class="fact-grid">
+          <div><dt>Selección del módulo original</dt><dd>200.000 tweets</dd></div>
+          <div><dt>Después de la preparación</dt><dd>195.997 tweets</dd></div>
+          <div><dt>Entrenamiento M1</dt><dd>137.197 tweets</dd></div>
+          <div><dt>Validación M1</dt><dd>29.400 tweets</dd></div>
+          <div><dt>Prueba M1</dt><dd>29.400 tweets</dd></div>
+          <div><dt>Comparación de velocidad M2</dt><dd>Dos muestras independientes de textos distintos, sin caché</dd></div>
+        </dl>
+        <p>Sentiment140 utiliza <strong>supervisión distante</strong>: sus etiquetas se derivaron de
+           emoticonos y pueden contener errores. M2 compara tiempos utilizando el mismo clasificador,
+           no una nueva evaluación de exactitud.</p>
+        <p class="fineprint">Al escoger 1, 100, 1.000 o 10.000 tweets se elige el volumen medido.
+           «Solicitudes simultáneas» indica cargas concurrentes al servidor, no tweets escritos manualmente.
+           Si el volumen no permite esa concurrencia, la plataforma indica «No aplica».</p>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-fundamentos" aria-labelledby="tab-fundamentos" tabindex="0" hidden>
+        <h3>Fundamentos: ¿por qué responde más rápido?</h3>
+        <dl class="definitions">
+          <div><dt>IA y procesamiento del lenguaje natural (PLN)</dt>
+            <dd>Permiten preparar los textos para reconocer patrones y clasificar el sentimiento positivo o negativo.</dd></div>
+          <div><dt>Big Data: volumen, variedad y velocidad</dt>
+            <dd><strong>Volumen:</strong> muchas publicaciones;
+                <strong>variedad:</strong> diferentes tipos de información;
+                <strong>velocidad:</strong> rapidez con que se generan y procesan los datos.
+                <strong>M2 se centra en la velocidad de procesamiento</strong> de tweets históricos
+                para reducir el tiempo de respuesta. No analiza publicaciones en tiempo real
+                ni utiliza procesamiento distribuido.</dd></div>
+          <div><dt>Normalización, tokens y n-gramas</dt>
+            <dd>Transforman y preparan los mensajes. M2 utiliza una normalización equivalente pero más ligera cuando es posible.</dd></div>
+          <div><dt>TF-IDF</dt>
+            <dd>Representa la importancia de palabras y combinaciones de términos en forma numérica.
+                Construir su matriz intermedia era una etapa costosa.</dd></div>
+          <div><dt>Regresión logística</dt>
+            <dd>Es el clasificador activo de M1; M2 mantiene su vocabulario, pesos y coeficientes entrenados.</dd></div>
+          <div><dt>Cálculo fusionado de M2: ¿qué significa?</dt>
+            <dd><strong>M1:</strong> primero construye una matriz TF-IDF y después calcula el sentimiento con
+                regresión logística. <strong>M2:</strong> utiliza directamente los pesos TF-IDF y los coeficientes
+                del mismo modelo para obtener la puntuación, sin construir toda la matriz intermedia.
+                <strong>Ventaja:</strong> realiza menos trabajo intermedio, reduce el tiempo de respuesta
+                en las pruebas realizadas y conserva las etiquetas verificadas.</dd></div>
+          <div><dt>Algoritmos Genéticos (AG)</dt>
+            <dd>Se implementaron para seleccionar configuraciones de ejecución mediante selección, cruce y mutación.
+                Se evaluaron durante el desarrollo, sin una mejora adicional reproducible.
+                No se ejecutan en la clasificación interactiva: esa utiliza el cálculo fusionado.</dd></div>
+          <div><dt>Latencia p95</dt>
+            <dd>Tiempo en el cual terminó el 95 % de las solicitudes HTTP medidas. <strong>Menos es mejor.</strong></dd></div>
+          <div><dt>Rendimiento (tweets/s)</dt>
+            <dd>Cantidad de tweets procesados por segundo. <strong>Más es mejor.</strong></dd></div>
+          <div><dt>Calidad del modelo</dt>
+            <dd>En M1 se compararon Naive Bayes (F1 macro de validación: 78,72 %),
+                SVM lineal (79,04 %) y regresión logística (80,44 %).
+                El modelo activo obtuvo <strong>79,97 % de F1 macro en prueba</strong>.
+                M2 no lo reentrena.</dd></div>
+        </dl>
+        <p class="fineprint">Las cifras de validación corresponden a la comparación de modelos del Módulo 1.
+           El F1 de prueba corresponde al clasificador elegido y no mide la velocidad de M2.</p>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-trivia" aria-labelledby="tab-trivia" tabindex="0" hidden>
+        <h3>Trivia y curiosidades de NEXUS MENTIS</h3>
+        <div class="trivia-context">
+          <p><strong>¿De dónde viene NEXUS MENTIS?</strong> «Nexus» significa unión, vínculo o conexión;
+             «Mentis» significa «de la mente». Su sentido conceptual es <strong>«conexión de mentes e ideas»</strong>.</p>
+          <p><strong>¿Por qué Twitter se llama X?</strong> La plataforma cambió de marca;
+             Sentiment140 conserva tweets históricos publicados cuando se llamaba Twitter.</p>
+          <div class="logo-explainer">
+            <img src="/assets/nexus-logo.webp" width="72" height="72" loading="lazy" alt="Logotipo de NEXUS MENTIS">
+            <p><strong>¿Qué representa el logotipo?</strong> La identidad visual de NEXUS MENTIS:
+               conectar comunicación, pensamiento e inteligencia artificial.</p>
+          </div>
+        </div>
+        <h3>Comprueba lo aprendido</h3>
+        <p>Responde tres preguntas sobre las mejoras de M2. Las respuestas se evalúan localmente.</p>
+        <form id="trivia-form" class="trivia-form">
+          <fieldset>
+            <legend>1. ¿Qué cambia principalmente en NEXUS OPTIMIZE?</legend>
+            <label><input type="radio" name="q1" value="a" required> Los coeficientes del modelo original</label>
+            <label><input type="radio" name="q1" value="b"> La forma de ejecutar TF-IDF y la clasificación</label>
+            <label><input type="radio" name="q1" value="c"> Las etiquetas de sentimiento</label>
+          </fieldset>
+          <fieldset>
+            <legend>2. ¿Qué significa una latencia p95 menor?</legend>
+            <label><input type="radio" name="q2" value="a" required> Menor tiempo de respuesta</label>
+            <label><input type="radio" name="q2" value="b"> Mayor precisión del clasificador</label>
+            <label><input type="radio" name="q2" value="c"> Más tweets repetidos</label>
+          </fieldset>
+          <fieldset>
+            <legend>3. ¿Cuál fue el resultado de los Algoritmos Genéticos?</legend>
+            <label><input type="radio" name="q3" value="a" required> Reentrenaron la regresión logística</label>
+            <label><input type="radio" name="q3" value="b"> Explican por sí solos toda la mejora</label>
+            <label><input type="radio" name="q3" value="c"> Se evaluaron, sin ventaja adicional demostrada frente al cálculo fusionado</label>
+          </fieldset>
+          <button type="submit" class="btn btn-primary">Comprobar respuestas</button>
+          <p id="trivia-result" role="status" aria-live="polite">Responde las tres preguntas para ver tu resultado.</p>
+        </form>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-ayuda" aria-labelledby="tab-ayuda" tabindex="0" hidden>
+        <h3>Ayuda: recorrido rápido de NEXUS OPTIMIZE</h3>
+        <ol class="help-list">
+          <li><strong>Comparación:</strong> selecciona el volumen total, el número de peticiones HTTP
+              en paralelo y la muestra A o B. Cada petición contiene hasta 256 tweets.
+              Se consultan mediciones guardadas: cambiar un control no repite la prueba.</li>
+          <li><strong>Resultados:</strong> observa la latencia p95 (menor es mejor) y la cantidad de
+              tweets/s (mayor es mejor). Las cifras son mediciones guardadas, no simulaciones.</li>
+          <li><strong>La técnica:</strong> compara las estructuras de M1 y M2 para comprender qué cálculo
+              se evitó y por qué la regresión logística original permanece intacta.
+              El AG se evaluó durante el desarrollo, pero no clasifica tweets en esta interfaz.</li>
+          <li><strong>Clasificación:</strong> escribe de 1 a 8 tweets en <strong>inglés</strong>
+              o carga los ejemplos, y pulsa «Comparar clasificación» para verificar ambas rutas.</li>
+          <li><strong>Información y apoyo:</strong> consulta Dataset, Fundamentos, Trivia e Institucional
+              para ampliar tu comprensión del proyecto.</li>
+        </ol>
+        <p>El clasificador distingue sentimiento positivo o negativo y puede cometer errores.
+           M2 compara la velocidad de ejecución, no cambia la precisión predictiva.
+           Esta demostración local utiliza textos en inglés; la traducción automática de M1
+           no forma parte de la comparación.</p>
+        <p class="fineprint"><strong>¿La aplicación no responde?</strong> Verifica que el servidor local
+           esté ejecutándose. Si no ves cambios recientes, presiona Ctrl+F5.
+           Cuando faltan datos experimentales, la plataforma lo indica sin inventar cifras.</p>
+         <p class="fineprint">Documentación técnica de la aplicación:
+            <a href="/docs">consultar la API</a>.</p>
+      </div>
+
+      <div class="info-panel" role="tabpanel" id="panel-institucional" aria-labelledby="tab-institucional" tabindex="0" hidden>
+        <p class="eyebrow eyebrow-dark">PROYECTO ACADÉMICO</p>
+        <h3>INSTITUTO INTERNACIONAL DE AGUASCALIENTES</h3>
+        <p><strong>Maestría en Inteligencia Artificial para la Transformación Digital</strong></p>
+        <dl class="definitions">
+          <div><dt>Asignatura</dt><dd>Tópicos de IA para la Transformación Digital</dd></div>
+          <div><dt>Actividad</dt><dd>Práctica 2: análisis, implementación y prueba de técnicas de IA para optimizar el tiempo de respuesta</dd></div>
+          <div><dt>Aplicación</dt><dd>NEXUS MENTIS — NEXUS OPTIMIZE</dd></div>
+          <div><dt>Módulo</dt><dd>2 — Optimización del análisis de sentimientos</dd></div>
+          <div><dt>Alumno</dt><dd>Antonio Nicolás Toro González</dd></div>
+          <div><dt>Tutor</dt><dd>Dr. Francisco Javier Luna Rosas</dd></div>
+        </dl>
+        <p><strong>Descripción del proyecto:</strong> aplicación web didáctica en Python que compara
+           el tiempo de respuesta del procesamiento original de tweets y una ejecución optimizada
+           de su clasificador. Conserva el modelo de regresión logística del Módulo 1,
+           presenta métricas HTTP verificadas y permite probar predicciones equivalentes.</p>
+        <dl class="fact-grid">
+          <div><dt>Lenguaje</dt><dd>Python</dd></div>
+          <div><dt>Dataset</dt><dd>Sentiment140 — Twitter (actualmente X)</dd></div>
+          <div><dt>PLN</dt><dd>Normalización, tokenización y n-gramas</dd></div>
+          <div><dt>Representación</dt><dd>TF-IDF</dd></div>
+          <div><dt>Clasificador original</dt><dd>Regresión logística</dd></div>
+          <div><dt>Técnicas evaluadas en M2</dt><dd>Cálculo fusionado, lotes, caché, concurrencia y Algoritmos Genéticos</dd></div>
+          <div><dt>API</dt><dd>FastAPI</dd></div>
+          <div><dt>Interfaz</dt><dd>HTML, CSS y JavaScript</dd></div>
+        </dl>
+        <p><strong>Repositorio del Módulo 1:</strong>
+           <a href="https://github.com/edtech-mx-ve/nexus-mentis-analyze-m1" target="_blank"
+              rel="noopener noreferrer">NEXUS ANALYZE — Código fuente y documentación en GitHub</a>.</p>
+        <p><strong>Repositorio del Módulo 2:</strong>
+           <a href="https://github.com/edtech-mx-ve/nexus-mentis-optimize-m2" target="_blank"
+              rel="noopener noreferrer">NEXUS OPTIMIZE — Código fuente y documentación en GitHub</a>.</p>
+        <p class="fineprint">Las comparaciones HTTP se realizaron dentro de un servicio local;
+           sus resultados no garantizan la misma velocidad en otros equipos o despliegues.</p>
+      </div>
+    </section>
+    <section class="closing-note-section" aria-labelledby="closing-note-title">
+      <div class="container closing-note">
+        <h2 id="closing-note-title">Aprender a optimizar</h2>
+        <p>NEXUS OPTIMIZE demuestra que es posible reducir el tiempo de respuesta sin reentrenar
+          el modelo ni alterar sus predicciones. Aunque el Algoritmo Genético no aportó mejoras adicionales,
+          su evaluación permitió explorar alternativas. Se propone continuar optimizando el consumo de
+          recursos y validar el rendimiento en distintos entornos.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span><strong>NEXUS MENTIS</strong></span>
+      <span>Módulo 2 · Optimización de inferencia · Tiempo de respuesta</span>
+    </div>
+  </footer>
+</body>
+</html>

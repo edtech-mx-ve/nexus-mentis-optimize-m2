@@ -1,0 +1,30 @@
+# NEXUS OPTIMIZE M2 — demostrador académico público; no un servicio de producción.
+services:
+  - type: web
+    name: nexus-mentis-optimize-m2
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: NEXUS_TRUST_LOCAL_MODEL
+        value: "1"
+      - key: NEXUS_HOST
+        value: "0.0.0.0"
+      - key: NEXUS_PUBLIC_DEMO
+        value: "1"
+      - key: NEXUS_PUBLIC_ENABLE_COMPARE
+        value: "1"
+      - key: NEXUS_REQUIRE_PUBLIC_REPORTS
+        value: "1"
+      - key: NEXUS_PUBLIC_MAX_BATCH
+        value: "8"
+      - key: NEXUS_PUBLIC_REQUESTS_PER_MINUTE
+        value: "30"
+      - key: NEXUS_INFERENCE_STRATEGY
+        value: "reference"
+      - key: NEXUS_CACHE_CAPACITY
+        value: "0"
+      - key: NEXUS_EXPOSE_METRICS
+        value: "0"
+      - key: PYTHONUNBUFFERED
+        value: "1"

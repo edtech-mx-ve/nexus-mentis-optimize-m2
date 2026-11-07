@@ -1,0 +1,52 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.log
+.env
+.env.*
+.git/
+.DS_Store
+data/
+results/*.json
+results/*.svg
+!results/.gitkeep
+backup_pruebas_*/
+NEXUS_OPTIMIZE_BACKUP_*/
+BACKUPS_NEXUS_OPTIMIZE/
+.idea/
+.vscode/
+# Solo 'public_reports' exportados mediante el sanitizador van al repositorio.
+
+# Endurecimiento para publicación: nunca incorporar evidencia experimental privada.
+# Se conserva solo el marcador opcional del directorio.
+/results/**
+!/results/.gitkeep
+
+# Archivos de trabajo, paquetes y credenciales habituales.
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.bak
+*.tmp
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+*.db
+.coverage
+htmlcov/
+dist/
+build/
+node_modules/
+
+# Evitar cargas accidentales de otros modelos serializados.
+*.joblib
+!reference/model.joblib
+
+# Dependencias web de Swagger descargadas localmente (se regeneran con el instalador).
+/nexus_optimize/web/swagger-ui-bundle.js
+/nexus_optimize/web/swagger-ui.css

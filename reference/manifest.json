@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "source": "NEXUS MENTIS — NEXUS ANALYZE · Módulo 1 (archivo aportado por el usuario)",
+  "model_sha256": "70d3ad62893c433120175f2b53f08236e3599e6737079d846284699c81329109",
+  "report_sha256": "3d26965ad8eb100c77cb9d1143e931cab85c18801d79211bfef61c73f7902d2c",
+  "expected_scikit_learn": "1.9.1",
+  "expected_python_minor": "3.11",
+  "baseline_recorded_utc": "2026-11-05T05:32:20.004411+00:00",
+  "purpose": "Integridad de archivos, no certifica que un pickle sea seguro."
+}
